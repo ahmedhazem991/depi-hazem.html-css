@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="Ip-cruds">
+    <div class="head">
+        <h2>Hazem's-cruds</h2>
+        <p>Product Management System</p>
+    </div>
+    <div class="inputs">
+        <input type="text" id="title" placeholder="title">
+        <div class="price">
+            <input onkeyup="getTotal()" onchange="getTotal()" type="number" id="price" placeholder="price">
+            <input onkeyup="getTotal()" onchange="getTotal()" type="number" id="taxes" placeholder="taxes">
+            <input onkeyup="getTotal()" onchange="getTotal()" type="number" id="ads" placeholder="ads">
+            <input onkeyup="getTotal()" onchange="getTotal()" type="number" id="discount" placeholder="discount">
+            <small id="total"></small>
+        </div>
+            <input type="number" id="count" placeholder="count">
+            <input type="text" id="category" placeholder="category">
+            <button id="submit">Create</button>
+    </div>
+    <div class="outputs">
+        <div class="searchBlock">
+            <input onkeyup="searchData(this.value)" type="text" id="search" placeholder="Search">
+            <div class="btnSearch">
+            <button onclick="getSearchMood(this.id)" id="searchTitle">Search By Title</button>
+            <button onclick="getSearchMood(this.id)" id="searchCategory" class="buttonx">Search By Category</button>
+            </div>
+            </div>
+            <div id="deleteAll">
+
+            </div>
+        <table>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>price</th>
+                <th>taxes</th>
+                <th>ads</th>
+                <th>discount</th>
+                <th>total</th>
+                <th>category</th>
+                <th>update</th>
+                <th>delete</th>
+            </tr>
+
+            <tbody id="tbody">
+            
+            </tbody>
+ 
+        </table>    
+    </div>
+</div> 
+    <style>
+        *{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    padding-top: 10px;
+    background:gray;
+    color: #fff;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+}
+
+.cruds{
+    width: 80%;
+    margin: auto;
+}
+
+.head{
+    text-align: center;
+    text-transform: uppercase;
+}
+
+input{
+    width: 100%;
+    height: 35px;
+    outline: none;
+    border: none;
+    background: #111;
+    margin: 4px 0;
+    border-radius: 4px;
+    padding: 4px;
+    color: #fff;
+    font-size: 16px;
+}
+input:focus{
+    background: #000;
+    transform: scale(1.05);
+}
+.price input{
+    width: 20%;
+}
+
+#total{
+    background: yellowgreen;
+    padding: 4px 2px;
+    border-radius: 4px;
+    margin-left: 4px;
+}
+#total::before{
+    content: 'Total : ';
+}
+button{
+    width: 100%;
+    height: 35px;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    margin-top: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    transition: 0.5s;
+    background-color: #fff;
+}
+button:hover{
+    background: rgb(252, 6, 6);
+    letter-spacing: 1px;
+}
+.btnSearch{
+    display: flex;
+    justify-content: space-between;
+}
+.btnSearch .buttonx{
+margin-left: 20%;
+}
+table{
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+}
+table th{
+text-transform: uppercase;
+}
+th,td {
+    padding: 5px;
+    font-size: 20px;
+}
+
+#deleteAll{
+    margin: 20px 0;
+    
+}
+
+#deleteAll button{
+    background: #d31305;
+    color: #fff;
+    
+}#deleteAll button:hover{
+    background: #a71b11;
+   transform: scale(1.038);
+}
+#submit{
+    margin-bottom:9px;
+    margin-top:8px;
+    height: 40px;
+}
+    </style>
+    <script>
+        let title = document.getElementById('title');
+let price = document.getElementById('price');
+let taxes= document.getElementById('taxes');
+let ads = document.getElementById('ads');
+let discount = document.getElementById('discount');
+let total = document.getElementById('total');
+let count = document.getElementById('count');
+let category = document.getElementById('category');
+let submit = document.getElementById('submit');
+let mood = "create";
+let tmp;
+
+
+
+
+
+
+
+function getTotal() {
+    if (price.value != '') {
+        let result = (+price.value + +taxes.value + +ads.value) - +discount.value;
+        total.innerHTML = result + " EGP";
+        total.style.background ='#040';
+    }else{
+        total.innerHTML ="";
+        total.style.background ='#a00d02';
+    }
+};
+
+let dataPro;
+if (localStorage.product != null) {
+    dataPro = JSON.parse(localStorage.product)
+}else{dataPro = [];}
+
+submit.onclick =function(){
+    let newPro = {
+        title:title.value.toLowerCase(),
+        price:price.value,
+        taxes:taxes.value,
+        ads:ads.value,
+        discount:discount.value,
+        total:total.innerHTML,
+        count:count.value,
+        category:category.value.toLowerCase(),
+    };
+
+    if (title.value != "" && price.value != "" && category.value != "") 
+    {
+          if(mood === "create"){
+        if (newPro.count >= 1) {
+        for (let i = 0; i < newPro.count; i++) {
+            dataPro.push(newPro);
+        }
+    }else{
+
+    }
+    }else{
+        dataPro[tmp]=newPro;
+        mood = "create";
+        submit.innerHTML = "create";
+        count.style.display = "block"
+    }
+    clearData();
+    }
+  
+
+
+
+
+    localStorage.setItem('product', JSON.stringify(dataPro));
+    console.log(dataPro);
+    howData()
+    
+}
+
+function clearData(){
+    title.value = '';
+    price.value = '';
+    taxes.value = '';
+    ads.value = '';
+    discount.value = '';
+    category.value = '';
+    count.value = '';
+    total.innerHTML='';
+}
+
+
+function howData(){
+    getTotal()
+    let table ='';
+    for (let i = 0; i < dataPro.length; i++) {
+        table +=`<tr>
+        <td>${i+1}</td>
+        <td>${dataPro[i].title}</td>
+        <td>${dataPro[i].price}</td>
+        <td>${dataPro[i].taxes}</td>
+        <td>${dataPro[i].ads}</td>
+        <td>${dataPro[i].discount}</td>
+        <td>${dataPro[i].total}</td>
+        <td>${dataPro[i].category}</td>
+        <td><button onclick="updatass(${i})" id="update">update</button></td>
+        <td><button onclick="deleteData(${i})" id="delete">delete</button></td>
+
+    </tr>
+    `;
+        
+    }
+    document.getElementById("tbody").innerHTML = table;
+    let btnDelete =document.getElementById('deleteAll');
+ if (dataPro.length > 0) {
+    btnDelete.innerHTML=`
+    <button onclick="DeleteAll()">Delete All (${dataPro.length})</button>
+    `
+ }else{
+    btnDelete.innerHTML="";
+ }
+
+ 
+}
+howData();
+
+
+function deleteData(i) {    
+    dataPro.splice(i,1);
+    localStorage.product = JSON.stringify(dataPro)    
+    howData();
+}
+
+function DeleteAll(){
+    localStorage.clear()
+    dataPro.splice(0)
+    howData();
+}
+
+
+function updatass(i)
+{
+    title.value = dataPro[i].title;
+    price.value = dataPro[i].price;
+    taxes.value = dataPro[i].taxes;
+    ads.value = dataPro[i].ads;
+    discount.value = dataPro[i].discount;
+    getTotal()
+    count.style.display="none";
+    category.value = dataPro[i].category;
+    submit.innerHTML = "update";
+    mood = "update"
+    tmp = i;
+    scroll({
+        top: 0,
+        behavior: "smooth",
+    })
+   
+}
+
+let searchMood = "title";
+
+
+function getSearchMood(id)
+{   
+    let search = document.getElementById("search");
+    if(id == "searchTitle"){
+        searchMood = "title";
+    }else{
+        searchMood = "category";   
+    }
+    search.placeholder = "Search By "+ searchMood;
+    search.focus()
+    search.value = ""
+    howData()
+}
+
+
+function searchData(value)
+{
+    let table = "";
+    for (let i = 0; i < dataPro.length; i++) 
+    {
+        if(searchMood == "title")
+        {
+            
+                if (dataPro[i].title.includes(value.toLowerCase())) {
+                        table +=`
+                            <tr>
+                            <td>${i+1}</td>
+                            <td>${dataPro[i].title}</td>
+                            <td>${dataPro[i].price}</td>
+                            <td>${dataPro[i].taxes}</td>
+                            <td>${dataPro[i].ads}</td>
+                            <td>${dataPro[i].discount}</td>
+                            <td>${dataPro[i].total}</td>
+                            <td>${dataPro[i].category}</td>
+                            <td><button onclick="updatass(${i})" id="update">update</button></td>
+                            <td><button onclick="deleteData(${i})" id="delete">delete</button></td>
+                    
+                        </tr>
+                        `;
+                }
+                
+            
+            
+        }else{
+        
+                if (dataPro[i].category.includes(value.toLowerCase())) {
+                        table +=`
+                            <tr>
+                            <td>${i+1}</td>
+                            <td>${dataPro[i].title}</td>
+                            <td>${dataPro[i].price}</td>
+                            <td>${dataPro[i].taxes}</td>
+                            <td>${dataPro[i].ads}</td>
+                            <td>${dataPro[i].discount}</td>
+                            <td>${dataPro[i].total}</td>
+                            <td>${dataPro[i].category}</td>
+                            <td><button onclick="updatass(${i})" id="update">update</button></td>
+                            <td><button onclick="deleteData(${i})" id="delete">delete</button></td>
+                    
+                        </tr>
+                        `;
+                }
+            
+
+        }
+}
+    document.getElementById("tbody").innerHTML = table;
+}
+
+
+    </script>
+    
+</body>
+</html>
